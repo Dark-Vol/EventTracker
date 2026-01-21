@@ -1,0 +1,85 @@
+<div class="events-container">
+  <div class="header">
+    <h1>Облік подій</h1>
+    <p class="subtitle">Додавайте та відстежуйте події з різними типами</p>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Форма додавання події -->
+    <div class="form-card">
+      <h2>Додати подію</h2>
+      <app-from-input
+        [eventName]="eventName"
+        [eventType]="eventType"
+        (eventNameChange)="eventName = $event"
+        (eventTypeChange)="eventType = $event"
+        (submit)="addEvent()"
+      ></app-from-input>
+    </div>
+
+    <!-- Статистика -->
+    <div class="stats-card">
+      <h2>Статистика</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">{{ getTotalEvents() }}</div>
+          <div class="stat-label">Всього подій</div>
+        </div>
+        <div class="stat-item stat-click">
+          <div class="stat-value">{{ getEventsByType('click') }}</div>
+          <div class="stat-label">Click</div>
+        </div>
+        <div class="stat-item stat-lead">
+          <div class="stat-value">{{ getEventsByType('lead') }}</div>
+          <div class="stat-label">Lead</div>
+        </div>
+        <div class="stat-item stat-sale">
+          <div class="stat-value">{{ getEventsByType('sale') }}</div>
+          <div class="stat-label">Sale</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Таблиця подій -->
+    <div class="table-card">
+      <h2>Список подій</h2>
+      @if (events().length === 0) {
+        <div class="empty-state">
+          <p>Поки що немає подій. Додайте першу подію використовуючи форму вище.</p>
+        </div>
+      } @else {
+        <div class="table-wrapper">
+          <table class="events-table">
+            <thead>
+              <tr>
+                <th>Назва події</th>
+                <th>Тип події</th>
+                <th>Дата і час створення</th>
+                <th>Дії</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (event of events(); track event.id) {
+                <tr>
+                  <td>{{ event.name }}</td>
+                  <td>
+                    <span class="badge" [class]="'badge-' + event.type">
+                      {{ event.type }}
+                    </span>
+                  </td>
+                  <td>{{ formatDate(event.createdAt) }}</td>
+                  <td>
+                    <app-btn-delete
+                      [eventId]="event.id"
+                      (deleteClick)="deleteEvent($event)"
+                    ></app-btn-delete>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>
